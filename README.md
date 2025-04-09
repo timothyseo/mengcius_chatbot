@@ -74,20 +74,20 @@
 **개발 중 어려움 & 해결 (Challenges & Solutions)**   
     - Challenge 1: 제한된 GPU 메모리 (T4 16GB x 2)로 5.8B 모델 파인튜닝   
     - Solution:   
-        4-bit Quantization (NF4): bitsandbytes 라이브러리를 사용하여 모델 로드 시 메모리 사용량 대폭 감소.   
-        PEFT (LoRA): 전체 모델 파라미터가 아닌, 소수의 LoRA 파라미터만 학습하여 메모리 효율 증대.   
-        Gradient Accumulation: 작은 배치 사이즈(1)로 학습하되, 여러 스텝의 그래디언트를 누적(8)하여 실질적인 배치 사이즈 효과(8) 달성.   
-        Paged AdamW Optimizer: 옵티마이저 상태를 CPU 메모리로 페이징하여 GPU 메모리 절약.   
+            4-bit Quantization (NF4): bitsandbytes 라이브러리를 사용하여 모델 로드 시 메모리 사용량 대폭 감소.   
+            PEFT (LoRA): 전체 모델 파라미터가 아닌, 소수의 LoRA 파라미터만 학습하여 메모리 효율 증대.   
+            Gradient Accumulation: 작은 배치 사이즈(1)로 학습하되, 여러 스텝의 그래디언트를 누적(8)하여 실질적인 배치 사이즈 효과(8) 달성.   
+            Paged AdamW Optimizer: 옵티마이저 상태를 CPU 메모리로 페이징하여 GPU 메모리 절약.   
     - Challenge 2: 챗봇의 불필요한 다음 질문 생성 또는 장황한 답변   
     - Solution:   
-        Stopping Criteria: transformers.StoppingCriteria 상속받아 StopOnTokens 클래스 구현. 답변 생성 중 \n질문:, \n사용자 질문: 등 특정 토큰 시퀀스가 나타나면 생성을 즉시 중단시켜 간결하고 명확한 답변 유도.   
+            Stopping Criteria: transformers.StoppingCriteria 상속받아 StopOnTokens 클래스 구현. 답변 생성 중 \n질문:, \n사용자 질문: 등 특정 토큰 시퀀스가 나타나면 생성을 즉시 중단시켜 간결하고 명확한 답변 유도.   
     - Challenge 3: 최적의 학습 지점 탐색 및 과적합 방지   
     - Solution:   
-        Evaluation & Early Stopping: TrainingArguments에서 evaluation_strategy="steps" 설정하여 일정 스텝(50)마다 검증 데이터셋(test)으로 성능(eval_loss) 평가. EarlyStoppingCallback(patience=2)을 사용하여 특정 횟수 이상 성능 개선이 없으면 학습 조기 중단. load_best_model_at_end=True로 설정하여 가장 좋았던 시점의 모델(checkpoint-250) 자동 저장.   
+            Evaluation & Early Stopping: TrainingArguments에서 evaluation_strategy="steps" 설정하여 일정 스텝(50)마다 검증 데이터셋(test)으로 성능(eval_loss) 평가. EarlyStoppingCallback(patience=2)을 사용하여 특정 횟수 이상 성능 개선이 없으면 학습 조기 중단. load_best_model_at_end=True로 설정하여 가장 좋았던 시점의 모델(checkpoint-250) 자동 저장.   
     - Challenge 4: 다양한 형태의 맹자 데이터(단일 QA, 심층 대화) 통합 처리   
     - Solution:   
-        Data Processor 로직 구현 (data_processing.py): JSON 파일 내 다른 형식의 데이터를 파싱하여 일관된 'instruction'-'output' 쌍으로 변환. 특히 3단계 대화는 이전 대화 내용을 'instruction'에 누적 포함시켜 문맥 학습 유도.   
-     
+            Data Processor 로직 구현 (data_processing.py): JSON 파일 내 다른 형식의 데이터를 파싱하여 일관된 'instruction'-'output' 쌍으로 변환. 특히 3단계 대화는 이전 대화 내용을 'instruction'에 누적 포함시켜 문맥 학습 유도.   
+         
 **결과 및 평가 (Results & Evaluation)**   
   - 학습 결과:   
       최종 학습된 체크포인트: checkpoint-250 (Early Stopping에 의해 결정됨)   
