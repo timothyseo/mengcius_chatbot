@@ -33,7 +33,7 @@
       학습: 4-bit Quantization (NF4, compute_dtype=bfloat16) (training.py)   
       추론: 8-bit Quantization (chatbot.py)   
   - 개발 환경: Kaggle Notebooks   
-  - 하드웨어: NVIDIA Tesla T4 GPU x 2   
+  - 하드웨어: NVIDIA Tesla T4 GPU x 2      
 **시스템 아키텍처 (System Architecture) - (간략)**   
 [사용자 입력] → [Chatbot Interface (chatbot.py)] → [프롬프트 구성 (페르소나 + 대화기록 + 질문)] → [PEFT 모델 (KoAlpaca-5.8B + LoRA Adapter) (8-bit Quantized)] → [토크나이저] → [답변 생성] →  
 [StopOnTokens 체크] → [응답 텍스트] → [사용자 출력]   
@@ -42,7 +42,7 @@
       사전 학습된 KoAlpaca 모델에 파인튜닝된 LoRA 어댑터를 적용하고 8-bit 양자화된 PEFT 모델을 로드.   
       토크나이저를 사용하여 프롬프트를 토큰 ID로 변환 후 모델에 입력.   
       모델이 답변 토큰 생성. StopOnTokens 조건 만족 시 생성 중단.   
-      생성된 토큰 ID를 텍스트로 디코딩하여 사용자에게 최종 응답 전달.   
+      생성된 토큰 ID를 텍스트로 디코딩하여 사용자에게 최종 응답 전달.      
 **개발 과정 (Development Process)**   
   1. 기획 및 데이터 준비: 맹자 챗봇 아이디어 구체화, 논어, 대학, 중용, 맹자 국역판으로부터 추출한 데이터 기반으로 맹자 관련 대화 데이터셋 (mencius_dataset.json) 구축 (단일 턴 QA 및 3단계 심층 대화 형식 포함).   
   2. 데이터 전처리 (data_processing.py):   
